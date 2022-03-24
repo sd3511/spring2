@@ -2,7 +2,7 @@ package ru.geekbrains.spring.winter.market.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.geekbrains.spring.winter.market.dtos.Cart;
+import ru.geekbrains.spring.winter.market.model.Cart;
 import ru.geekbrains.spring.winter.market.entities.Product;
 import ru.geekbrains.spring.winter.market.exceptions.ResourceNotFoundException;
 
@@ -28,11 +28,11 @@ public class CartService {
         tempCart.add(product);
     }
 
-    public void increaseQuantity(Integer id, Integer delta){
-        tempCart.increaseQuantity(id, delta);
+    public void remove(Long productId) {
+        tempCart.remove(productId);
     }
 
-    public void clearCart() {
+    public void clear() {
         tempCart.clear();
     }
 }
