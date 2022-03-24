@@ -1,41 +1,32 @@
 package ru.geekbrains.spring.winter.market.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.geekbrains.spring.winter.market.dtos.Cart;
-import ru.geekbrains.spring.winter.market.entities.Product;
-import ru.geekbrains.spring.winter.market.services.ProductService;
-
-import java.util.List;
-import java.util.Optional;
+import ru.geekbrains.spring.winter.market.services.CartService;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/cart")
+@RequiredArgsConstructor
 public class CartController {
-
-    private final Cart cart;
-    private final ProductService productService;
-    @GetMapping
-    public List<Product> getAllProducts(){
-        return cart.getProductList();
-    }
+    private final CartService cartService;
 
     @GetMapping("/add/{id}")
-    public List<Product> addProductInCart(@PathVariable Long id){
-        Optional<Product> product = productService.findById(id);
-        return cart.addToCart(product.get());
-
-
+    public void addToCart(@PathVariable Long id) {
+        cartService.add(id);
     }
-    @GetMapping("/delete/{id}")
-    public void deleteProductFromCart(@PathVariable Long id){
-        Optional<Product> product = productService.findById(id);
-        cart.deleteProduct(product);
 
+    @GetMapping("/clear")
+    public void clearCart(){
+        cartService.clearCart();
+    }
 
+    @GetMapping("/increase")
+    public void increaseQuantity(@RequestParam Integer delta, @RequestParam Integer index){
+        cartService.increaseQuantity(index, delta);
+    }
+    @GetMapping()
+    public Cart getCurrentCart() {
+        return cartService.getCurrentCart();
     }
 }

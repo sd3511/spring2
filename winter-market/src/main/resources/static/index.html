@@ -23,7 +23,7 @@
             <td>ID</td>
             <td>Название</td>
             <td>Цена</td>
-            <td>Действие</td>
+            <td></td>
         </tr>
         <tbody>
         <tr ng-repeat="p in productsList">
@@ -32,30 +32,30 @@
             <td>{{p.price}}</td>
             <td>
                 <button type="button" class="btn btn-primary" ng-click="addToCart(p.id)">Добавить в корзину</button>
-                <button type="button" class="btn btn-danger" ng-click="deleteProductById(p.id)">Delete</button>
+<!--                <button type="button" class="btn btn-primary" ng-click="showProductInfo(p.id)">Info</button>-->
+<!--                <button type="button" class="btn btn-danger" ng-click="deleteProductById(p.id)">Delete</button>-->
             </td>
         </tr>
         </tbody>
     </table>
-
-    <h3>Корзина</h3>
+    <p></p>
+    <h3>Корзина  <button class="btn btn-primary" type="button" ng-click ="clearCart()">Очистить корзину</button></h3>
     <table class="table table-hover" cellpadding="0" cellspacing="0">
         <tr>
-            <td>ID</td>
             <td>Название</td>
-            <td>Цена</td>
             <td>Количество</td>
-            <td>Действие</td>
+            <td>Цена</td>
         </tr>
         <tbody>
-        <tr ng-repeat="p in cartList">
-            <td>{{p.id}}</td>
-            <td>{{p.title}}</td>
-            <td>{{p.price}}</td>
+        <tr ng-repeat="item in cart.items">
+            <td> <button type="button" ng-click = "increaseQuantity($index,-item.quantity)" class="btn btn-danger">-</button>{{item.productTitle}}</td>
+            <td><button type="button" ng-click = "increaseQuantity($index,-1)" class="btn btn-danger">-</button>{{item.quantity}}<button type="button" ng-click = "increaseQuantity($index,1)"class="btn btn-success">+</button></td>
+            <td>{{item.price}}</td>
+        </tr>
+        <tr>
+            <td>Итого</td>
             <td></td>
-            <td>
-                <button type="button" class="btn btn-danger" ng-click="deleteFromCart(p.id)">Delete</button>
-            </td>
+            <td>{{cart.totalPrice}}</td>
         </tr>
         </tbody>
     </table>

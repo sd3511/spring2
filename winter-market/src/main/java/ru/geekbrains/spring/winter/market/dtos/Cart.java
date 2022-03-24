@@ -1,34 +1,63 @@
 package ru.geekbrains.spring.winter.market.dtos;
 
 import lombok.Data;
-import org.springframework.stereotype.Component;
 import ru.geekbrains.spring.winter.market.entities.Product;
+import ru.geekbrains.spring.winter.market.exceptions.ResourceNotFoundException;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-@Component
+@Data
 public class Cart {
-    private List<Product> productList;
+    private List<CartItem> items;
+    private int totalPrice;
 
-    @PostConstruct
-    private void init() {
-        productList = new ArrayList<>();
+    public Cart() {
+        this.items = new ArrayList<>();
     }
 
-    public List<Product> getProductList() {
-        return Collections.unmodifiableList(productList);
+    public List<CartItem> getItems() {
+        return Collections.unmodifiableList(items);
     }
 
-    public List<Product> addToCart(Product product){
-        productList.add(product);
-        return getProductList();
+    public void add(Product product) { // TODO: Доработать в ДЗ
+
+        if (items.stream().anyMatch(s -> s.getProductId().equals(product.getId()))) {
+            int i = items.indexOf(items.stream()
+                    .filter(s -> s.getProductId().equals(product.getId()))
+                    .findFirst()
+                    .orElseThrow(()->new ResourceNotFoundException("Данного продукта нет в корзине")));
+            increaseQuantity(i, 1);
+        } else {
+            items.add(new CartItem(product.getId(), product.getTitle(), 1, product.getPrice(), product.getPrice()));
+            recalculate();
+        }
+
     }
 
-    public void deleteProduct(Optional<Product> product) {
-        productList.remove(product.get());
+    public void increaseQuantity(Integer id, Integer delta) {
+        if (items.get(id).getQuantity() == 1 && delta < 0) {
+            items.remove(((int) id));
+        }else {
+            items.get(id).setQuantity(items.get(id).getQuantity() + delta);
+            items.get(id).setPrice(items.get(id).getPricePerProduct() * items.get(id).getQuantity());
+        }
+        items.removeIf(item -> item.getQuantity() == 0);
+
+        recalculate();
+
+    }
+
+    private void recalculate() {
+        totalPrice = 0;
+        for (CartItem item : items) {
+            totalPrice += item.getPrice();
+        }
+    }
+
+    public void clear() {
+        items.clear();
+        recalculate();
     }
 }
