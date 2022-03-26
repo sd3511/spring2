@@ -1,27 +1,32 @@
 package ru.geekbrains.winter.market.core.integrations;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import ru.geekbrains.winter.market.api.CartDto;
 import ru.geekbrains.winter.market.api.ProductDto;
-
-import java.util.Optional;
+import ru.geekbrains.winter.market.api.ResourceNotFoundException;
 
 @Component
 @RequiredArgsConstructor
 public class CartServiceIntegration {
-    private final RestTemplate restTemplate;
+    private final WebClient cartServiceWebClient;
 
-    @Value("${cartService.url}")
-    private String url;
-
-    public Optional<CartDto> getCurrentCart() {
-        return Optional.ofNullable(restTemplate.getForObject(url, CartDto.class));
+    public CartDto getCurrentCart() {
+        return cartServiceWebClient.get()
+                .uri("/api/v1/cart")
+                .retrieve()
+                .bodyToMono(CartDto.class)
+                .block();
     }
 
-    public void clearCart(){
-        restTemplate.getForObject(url+"clear", Void.class);
+    public void clear() {
+        cartServiceWebClient.get()
+                .uri("/api/v1/cart/clear")
+                .retrieve()
+                .toBodilessEntity()
+                .block();
     }
 }

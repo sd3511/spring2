@@ -41,10 +41,6 @@
                 <li class="nav-item" ng-show="isUserLoggedIn()" style="padding: 4px;">
                     <button class="btn btn-outline-secondary btn-sm" ng-click="tryToLogout()">Выйти</button>
                 </li>
-
-                <li class="nav-item" style="padding: 4px;">
-                    <button class="btn btn-outline-warning btn-sm" ng-click="authCheck()">Кто я?</button>
-                </li>
             </ul>
         </div>
     </nav>
@@ -52,6 +48,26 @@
     <h1>Market</h1>
 
     <h3>Список товаров</h3>
+    <h1 class="display-6">Фильтр</h1>
+
+        <form class="align-middle" ng-submit="loadProducts()">
+            <div class="input-group input-group-sm" style="padding: 4px;">
+                <input id="minPrice" class="form-control" ng-model="filter.minPrice" type="text"
+                       aria-describedby="inputGroup-sizing-sm" placeholder="Минимальная цена" style="margin-left: 10px;">
+
+                <input id="maxPrice" class="form-control" ng-model="filter.maxPrice" type="text"
+                       aria-describedby="inputGroup-sizing-sm" placeholder="Максимальная цена" style="margin-left: 10px;">
+
+                <input id="title" class="form-control" ng-model="filter.title" type="text"
+                       aria-describedby="inputGroup-sizing-sm" placeholder="Название продукта" style="margin-left: 10px;">
+
+                <button id="filter" class="btn btn-outline-warning btn-sm"
+                        style="margin-left: 10px;" type="submit">Отфильтровать
+                </button>
+            </div>
+        </form>
+
+
     <table class="table table-hover" cellpadding="0" cellspacing="0">
         <tr>
             <td>ID</td>
