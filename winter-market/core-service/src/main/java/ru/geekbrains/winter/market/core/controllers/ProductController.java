@@ -20,7 +20,7 @@ public class ProductController {
     private final ProductService productService;
     private final ProductConverter productConverter;
 
-    /*@GetMapping
+/*    @GetMapping
     public List<ProductDto> findAllProducts() {
         return productService.findAll().stream().map(productConverter::entityToDto).collect(Collectors.toList());
     }*/

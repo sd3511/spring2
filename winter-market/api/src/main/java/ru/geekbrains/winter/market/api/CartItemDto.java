@@ -9,6 +9,8 @@ public class CartItemDto {
     private BigDecimal pricePerProduct;
     private BigDecimal price;
 
+
+
     public Long getProductId() {
         return productId;
     }

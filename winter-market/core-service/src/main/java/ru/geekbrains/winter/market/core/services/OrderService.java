@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.geekbrains.winter.market.api.CartDto;
+import ru.geekbrains.winter.market.api.ResourceNotFoundException;
 import ru.geekbrains.winter.market.core.entities.Order;
 import ru.geekbrains.winter.market.core.entities.OrderItem;
 import ru.geekbrains.winter.market.core.integrations.CartServiceIntegration;
@@ -19,14 +20,16 @@ public class OrderService {
     private final CartServiceIntegration cartServiceIntegration;
 
     @Transactional
-    public void createOrder(String username) {
+    public Order createOrder(String username) {
         CartDto cartDto = cartServiceIntegration.getCurrentCart();
         Order order = new Order();
         order.setUsername(username);
         order.setTotalPrice(cartDto.getTotalPrice());
         order.setItems(cartDto.getItems().stream().map(
                 cartItem -> new OrderItem(
-                        productService.findById(cartItem.getProductId()).get(),
+                        productService
+                                .findById(cartItem.getProductId())
+                                .orElseThrow(()->new ResourceNotFoundException("Product not found")),
                         order,
                         cartItem.getQuantity(),
                         cartItem.getPricePerProduct(),
@@ -35,5 +38,6 @@ public class OrderService {
         ).collect(Collectors.toList()));
         orderRepository.save(order);
         cartServiceIntegration.clear();
+        return order;
     }
 }
